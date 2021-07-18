@@ -1,6 +1,5 @@
 from hashlib import new
 from pprint import pprint
-import re
 from weakref import WeakKeyDictionary
 from flask import request, jsonify
 from marshmallow.fields import Email
@@ -206,8 +205,10 @@ Param: None
 def drinks_all():
     if request.method == 'GET':
         all_drinks = drink.query.all()
-
+        pprint(all_drinks)
         result = drinks_schema.dump(all_drinks)
+        pprint(result)
+
         
         return drinks_schema.jsonify(result)
 
@@ -259,7 +260,7 @@ def add_drink():
     if request.method == 'POST':
         #for one drink object
         name = request.json['name']
-        is_hot = request.json['is_hot']
+        temperature = request.json['temperature']
         bean_type = request.json['bean_type']
         roast_type = request.json['roast_type']
         drink_type = request.json['drink_type']
@@ -271,35 +272,41 @@ def add_drink():
         profile_id = request.json['profile_id']
         
         #add_ons for this drink object
-        creamer_level = request.json['creamer_level']
+        room_for_creamer = request.json['room_for_creamer']
         number_of_sugar_bags = request.json['number_of_sugar_bags']
         milk_texture = request.json['milk_texture']
-        milk_level = request.json['milk_level']
         extra_comments = request.json['extra_comments']
-        drink_id = request.json['drink_id']
         
         
-        if name and is_hot and bean_type and roast_type and drink_type and creamer_type and sugar_type and milk_type and drink_location and is_favorite and profile_id:
+        if name and temperature and bean_type and roast_type and drink_type and creamer_type and sugar_type and milk_type and drink_location and is_favorite and profile_id:
             
-            if creamer_level and number_of_sugar_bags and milk_texture and milk_level and extra_comments and drink_id:
-            
-                if request.method == 'POST':
+            if room_for_creamer and number_of_sugar_bags and milk_texture and extra_comments:
                     
-                    one_drink = drink(name, is_hot, bean_type, roast_type, drink_type, creamer_type, sugar_type, milk_type, drink_location, profile_id)
-                    
-                    if one_drink:
-                        db.session.add(one_drink)
-                        db.session.commit()
-                    
-                    drink_add_ons = add_on(creamer_level, number_of_sugar_bags, milk_texture, milk_level, extra_comments, drink_id)
-                    
+                one_drink = drink(name,
+                                  temperature,
+                                  bean_type,
+                                  roast_type,
+                                  drink_type,
+                                  creamer_type,
+                                  sugar_type,
+                                  milk_type,
+                                  drink_location,
+                                  is_favorite,
+                                  profile_id)
+                if one_drink:
+                    db.session.add(one_drink)
+                    db.session.commit()
+                    drink_info = drink.query.filter_by(name = one_drink.name, profile_id = one_drink.profile_id).first()
+                    pprint(drink_info)
+                    drink_add_ons = add_on(room_for_creamer, number_of_sugar_bags, milk_texture, extra_comments, drink_info.drink_id)
+
                     if drink_add_ons:
                         db.session.add(drink_add_ons)
                         db.session.commit()
-                        return {drink_schema.jsonify(one_drink),addOn_schema.jsonify(drink_add_ons)}
-                    
-                    
-                    return {'message': 'Danger database failed to update'}, 403
+                        return drink_schema.jsonify(one_drink)
+                
+                
+                return {'message': 'Danger database failed to update'}, 403
             
             return {'message': 'one or more of the add on object fields is incorrect'}, 403
     
@@ -310,7 +317,7 @@ def add_drink():
 Drink Model
 
 Param: name 
-Param: is_hot 
+Param: temperature 
 Param: drink_id 
 Param: bean_type 
 Param: roast_type 

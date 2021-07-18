@@ -105,11 +105,11 @@ class drink(db.Model):
     # relationship linking add ons to the coffee drink
     add_on = db.relationship('add_on', backref='add_on', lazy=True, foreign_keys='[add_on.drink_id]')
 
-    def __init__(self, name, temperature, bean_type, level_of_roast, drink_type, creamer_type, sugar_type, milk_type, drink_location, is_favorite, profile_id):
+    def __init__(self, name, temperature, bean_type, roast_type, drink_type, creamer_type, sugar_type, milk_type, drink_location, is_favorite, profile_id):
         self.name = name
         self.temperature = temperature
         self.bean_type = bean_type
-        self.level_of_roast = level_of_roast
+        self.roast_type = roast_type
         self.drink_type = drink_type
         self.creamer_type = creamer_type
         self.sugar_type = sugar_type
@@ -191,7 +191,7 @@ class add_on(db.Model):
     __tablename__ = 'add_on'
 
     add_on_id = db.Column('add_on_id', db.Integer, nullable=False, primary_key=True, autoincrement=True)
-    creamer_level = db.Column('creamer_level', db.String(50), nullable=False)
+    room_for_creamer = db.Column('creamer_level', db.Boolean, nullable=False)
     number_of_sugar_bags = db.Column('number_of_sugar_bags', db.Integer, nullable=False)
     milk_texture = db.Column('milk_texture', db.String(50), nullable=False)
     extra_comments = db.Column('extra_comments', db.String(100), nullable=True)
@@ -200,8 +200,8 @@ class add_on(db.Model):
     drink_id = db.Column('drink_id', db.Integer, db.ForeignKey('drink.drink_id'), nullable=False, unique=True)
 
 
-    def __init__(self, creamer_level, number_of_sugar_bags, milk_texture, extra_comments, drink_id):
-        self.creamer_level = creamer_level
+    def __init__(self, room_for_creamer, number_of_sugar_bags, milk_texture, extra_comments, drink_id):
+        self.room_for_creamer = room_for_creamer
         self.number_of_sugar_bags = number_of_sugar_bags
         self.milk_texture = milk_texture
         self.extra_comments = extra_comments
@@ -209,7 +209,7 @@ class add_on(db.Model):
 
     '''
     update fields of an add on object in the database
-    param: add_on_id
+    param: room_for_creamer
     param: number_of_sugar_bags
     param: milk_texture
     param: extra_comments
@@ -217,6 +217,7 @@ class add_on(db.Model):
 
     def update(
             self,
+            room_for_creamer,
             number_of_sugar_bags,
             milk_texture,  
             extra_comments, 
@@ -224,6 +225,8 @@ class add_on(db.Model):
 
         if number_of_sugar_bags is not None:
             self.number_of_sugar_bags = number_of_sugar_bags
+        if room_for_creamer is not None:
+            self.room_for_creamer = room_for_creamer
         if milk_texture is not None:
             self.milk_texture = milk_texture
         if extra_comments is not None:

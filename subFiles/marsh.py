@@ -37,7 +37,7 @@ class DrinkSchema(ma.Schema):
     milk_type = fields.String()    
     drink_location = fields.String()    
     profile_id = fields.Integer()    
-    created_at = fields.DateTime()
+    created_at = fields.String()
     add_ons = fields.Nested(AddOnSchema)
     
     # class Meta:
