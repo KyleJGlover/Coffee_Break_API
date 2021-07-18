@@ -1,3 +1,4 @@
+from posixpath import dirname
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -63,10 +64,6 @@ class profile(db.Model, UserMixin):
             return token
         except Exception as e:
             return e
-
-    def is_authenticated(self):
-        # Gives the user authentication
-        return True
     
 
 
@@ -100,11 +97,10 @@ class drink(db.Model):
     milk_type = db.Column('milk_type', db.String(50), nullable=False)
     drink_location = db.Column('drink_location', db.String(50), nullable=False)
     is_favorite = db.Column('is_favorite', db.Boolean, nullable=False)
-
     created_at = db.Column('created_at',db.DateTime, default=datetime.utcnow)
 
     # Foreign key linking coffee drink to profile of the creator
-    profile_id = db.Column('profile_id', db.Integer, db.ForeignKey('profile.profile_id'), nullable=False, unique=True)
+    profile_id = db.Column('profile_id', db.Integer, db.ForeignKey('profile.profile_id'), nullable=False)
 
     # relationship linking add ons to the coffee drink
     add_on = db.relationship('add_on', backref='add_on', lazy=True, foreign_keys='[add_on.drink_id]')
@@ -140,17 +136,17 @@ class drink(db.Model):
 
     def update(
             self,
-            name='',
-            is_hot='',
-            bean_type='', 
-            level_of_roast='', 
-            drink_type='', 
-            creamer_type='', 
-            sugar_type='', 
-            milk_type='', 
-            drink_location='',
-            is_favorite = None, 
-            profile_id = None
+            name,
+            is_hot,
+            bean_type, 
+            level_of_roast, 
+            drink_type, 
+            creamer_type, 
+            sugar_type, 
+            milk_type, 
+            drink_location,
+            is_favorite, 
+            profile_id
             ):
         if profile_id is not None:
             if profile_id > 0:
@@ -180,7 +176,7 @@ class drink(db.Model):
         if milk_type is not None:
             self.milk_type = milk_type
             
-        if self.is_favorite:
+        if is_favorite is not None:
             self.is_favorite = is_favorite
             
         if creamer_type is not None:
@@ -205,12 +201,13 @@ class add_on(db.Model):
     drink_id = db.Column('drink_id', db.Integer, db.ForeignKey('drink.drink_id'), nullable=False, unique=True)
 
 
-    def __init__(self, creamer_level, number_of_sugar_bags, milk_texture, milk_level, extra_comments):
+    def __init__(self, creamer_level, number_of_sugar_bags, milk_texture, milk_level, extra_comments, drink_id):
         self.creamer_level = creamer_level
         self.number_of_sugar_bags = number_of_sugar_bags
         self.milk_texture = milk_texture
         self.milk_level = milk_level
         self.extra_comments = extra_comments
+        self.drink_id = drink_id
 
     '''
     update fields of an add on object in the database
@@ -223,14 +220,12 @@ class add_on(db.Model):
 
     def update(
             self,
-            add_on_id=0,
-            number_of_sugar_bags='',
-            milk_texture='', 
-            milk_level='', 
-            extra_comments='', 
+            number_of_sugar_bags,
+            milk_texture, 
+            milk_level, 
+            extra_comments, 
             ):
-        if add_on_id != 0:
-            self.add_on_id = add_on_id
+
         if number_of_sugar_bags is not None:
             self.number_of_sugar_bags = number_of_sugar_bags
         if milk_texture is not None:
@@ -249,6 +244,7 @@ class group_order(db.Model):
     group_id = db.Column('group_id', db.Integer, primary_key=True, autoincrement=True)
     order_location = db.Column('order_location', db.String(100), nullable=False)
     order_time = db.Column('order_time', db.String(50), nullable=False)
+    is_active = db.Column('is_active', db.Boolean, nullable = False)
     created_at = db.Column('created_at',db.DateTime, default=datetime.utcnow)
     
     # Foreign key linking profile to the admin of a group order
@@ -257,10 +253,11 @@ class group_order(db.Model):
     # relationship for the members of the group order to store in table
     member = db.relationship('member', backref ='order_member', lazy=True)
 
-    def __init__(self, order_location, order_time, is_admin):
-        self.is_Admin = is_admin
+    def __init__(self, order_location, order_time, is_admin, is_active):
+        self.is_admin = is_admin
         self.order_location = order_location
-        self.order_time = order_time   
+        self.order_time = order_time  
+        self.is_active = is_active 
     '''
     update fields of an add on object in the database
     param: add_on_id
@@ -269,15 +266,18 @@ class group_order(db.Model):
     param: milk_level
     param: extra_comments
     '''
-    def update(self, is_Admin, order_location, order_time ):
-        if is_Admin is not None:
-            self.is_Admin = is_Admin
+    def update(self, is_admin, order_location, order_time, is_active ):
+        if is_admin is not None:
+            self.is_admin = is_admin
         if order_location is not None:
             self.order_location = order_location
         if order_time is not None:
             self.order_time = order_time
-        
+        if is_active is not None:
+            self.is_active = is_active
+            
         db.session.commit()
+        return self
         
 
 class member(db.Model):
