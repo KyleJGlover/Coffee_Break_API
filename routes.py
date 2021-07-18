@@ -337,7 +337,7 @@ def update_drink():
                  
         #for one drink object
         name = request.json['name']
-        is_hot = request.json['is_hot']
+        temperature = request.json['temperature']
         bean_type = request.json['bean_type']
         roast_type = request.json['roast_type']
         drink_type = request.json['drink_type']
@@ -357,7 +357,7 @@ def update_drink():
                 
 
         
-        if name and is_hot and bean_type and roast_type and drink_type and creamer_type and sugar_type and milk_type and drink_location and is_favorite and profile_id:
+        if name and temperature and bean_type and roast_type and drink_type and creamer_type and sugar_type and milk_type and drink_location and is_favorite and profile_id:
             
             if creamer_level and number_of_sugar_bags and milk_texture and extra_comments and drink_id:
                 
@@ -366,7 +366,7 @@ def update_drink():
                 
                 if current_drink and current_add_on:
                     
-                    updated_drink = drink.update(current_drink, name, is_hot, bean_type, roast_type, drink_type, creamer_type, sugar_type, milk_type, drink_location, profile_id)
+                    updated_drink = drink.update(current_drink, name, temperature, bean_type, roast_type, drink_type, creamer_type, sugar_type, milk_type, drink_location, profile_id)
                     updated_add_ons = add_on.update(current_add_on, creamer_level, number_of_sugar_bags, milk_texture, extra_comments, drink_id)
                     
                 else:

@@ -88,7 +88,7 @@ class drink(db.Model):
 
     drink_id = db.Column('drink_id', db.Integer, primary_key=True, autoincrement=True)
     name = db.Column('name', db.String(50), nullable=False)
-    is_hot = db.Column('is_hot', db.String(50), nullable=False)
+    temperature = db.Column('temperature', db.String(50), nullable=False)
     bean_type = db.Column('bean_type', db.String(50), nullable=False)
     roast_type = db.Column('roast_type', db.String(50), nullable=False)
     drink_type = db.Column('drink_type', db.String(50), nullable=False)
@@ -105,9 +105,9 @@ class drink(db.Model):
     # relationship linking add ons to the coffee drink
     add_on = db.relationship('add_on', backref='add_on', lazy=True, foreign_keys='[add_on.drink_id]')
 
-    def __init__(self, name, is_hot, bean_type, level_of_roast, drink_type, creamer_type, sugar_type, milk_type, drink_location, is_favorite, profile_id):
+    def __init__(self, name, temperature, bean_type, level_of_roast, drink_type, creamer_type, sugar_type, milk_type, drink_location, is_favorite, profile_id):
         self.name = name
-        self.is_hot = is_hot
+        self.temperature = temperature
         self.bean_type = bean_type
         self.level_of_roast = level_of_roast
         self.drink_type = drink_type
@@ -137,7 +137,7 @@ class drink(db.Model):
     def update(
             self,
             name,
-            is_hot,
+            temperature,
             bean_type, 
             level_of_roast, 
             drink_type, 
@@ -155,8 +155,8 @@ class drink(db.Model):
         if name is not None:
             self.name = name
             
-        if is_hot is not None:
-            self.is_hot = is_hot
+        if temperature is not None:
+            self.temp = temperature
             
         if bean_type is not None:
             self.bean_type = bean_type
