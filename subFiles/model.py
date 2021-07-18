@@ -194,18 +194,16 @@ class add_on(db.Model):
     creamer_level = db.Column('creamer_level', db.String(50), nullable=False)
     number_of_sugar_bags = db.Column('number_of_sugar_bags', db.Integer, nullable=False)
     milk_texture = db.Column('milk_texture', db.String(50), nullable=False)
-    milk_level = db.Column('milk_level', db.String(50), nullable=False)
     extra_comments = db.Column('extra_comments', db.String(100), nullable=True)
 
     # Foreign key linking add ons to coffee drink
     drink_id = db.Column('drink_id', db.Integer, db.ForeignKey('drink.drink_id'), nullable=False, unique=True)
 
 
-    def __init__(self, creamer_level, number_of_sugar_bags, milk_texture, milk_level, extra_comments, drink_id):
+    def __init__(self, creamer_level, number_of_sugar_bags, milk_texture, extra_comments, drink_id):
         self.creamer_level = creamer_level
         self.number_of_sugar_bags = number_of_sugar_bags
         self.milk_texture = milk_texture
-        self.milk_level = milk_level
         self.extra_comments = extra_comments
         self.drink_id = drink_id
 
@@ -214,15 +212,13 @@ class add_on(db.Model):
     param: add_on_id
     param: number_of_sugar_bags
     param: milk_texture
-    param: milk_level
     param: extra_comments
     '''
 
     def update(
             self,
             number_of_sugar_bags,
-            milk_texture, 
-            milk_level, 
+            milk_texture,  
             extra_comments, 
             ):
 
@@ -230,8 +226,6 @@ class add_on(db.Model):
             self.number_of_sugar_bags = number_of_sugar_bags
         if milk_texture is not None:
             self.milk_texture = milk_texture
-        if milk_level is not None:
-            self.milk_level = milk_level
         if extra_comments is not None:
             self.extra_comments = extra_comments
             
@@ -260,11 +254,10 @@ class group_order(db.Model):
         self.is_active = is_active 
     '''
     update fields of an add on object in the database
-    param: add_on_id
-    param: number_of_sugar_bags
-    param: milk_texture
-    param: milk_level
-    param: extra_comments
+    param: is_admin
+    param: order_location
+    param: order_time
+    param: is_active
     '''
     def update(self, is_admin, order_location, order_time, is_active ):
         if is_admin is not None:

@@ -19,14 +19,11 @@ class ProfileSchema(ma.Schema):
 class AddOnSchema(ma.Schema):
     drink_id = fields.Integer()
     number_of_sugar_bags = fields.Integer()
-    first_name = fields.String()
-    last_name = fields.String()
-    email = fields.String()
-    password = fields.String()
-    created_at = fields.DateTime()
+    milk_texture = fields.String()
+    extra_comments = fields.String()
     
     # class Meta:
-    #     fields = ('drink_id', 'number_of_sugar_bags', 'milk_texture', 'milk_level', 'extra_comments')
+    #     fields = ('drink_id', 'number_of_sugar_bags', 'milk_texture', 'extra_comments')
         
 class DrinkSchema(ma.Schema):
     drink_id = fields.Integer()
