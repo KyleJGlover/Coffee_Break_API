@@ -9,18 +9,20 @@ ma = Marshmallow(app)
 class ProfileSchema(ma.Schema):
     profile_id = fields.Integer()
     username = fields.String()
+    first_name = fields.String()
+    last_name = fields.String()
+    description = fields.String()
     email = fields.String()
-    created_at = fields.String()
     
     # class Meta:
     #     fields = ('profile_id', 'username','first_name', 'last_name' 'email', 'password', 'created_at')
 
 
-class AddOnSchema(ma.Schema):
-    drink_id = fields.Integer()
-    number_of_sugar_bags = fields.Integer()
-    milk_texture = fields.String()
-    extra_comments = fields.String()
+# class AddOnSchema(ma.Schema):
+#     drink_id = fields.Integer()
+#     number_of_sugar_bags = fields.Integer()
+#     milk_texture = fields.String()
+#     extra_comments = fields.String()
     
     # class Meta:
     #     fields = ('drink_id', 'number_of_sugar_bags', 'milk_texture', 'extra_comments')
@@ -28,17 +30,22 @@ class AddOnSchema(ma.Schema):
 class DrinkSchema(ma.Schema):
     drink_id = fields.Integer()
     name = fields.String()
-    is_hot = fields.String()
+    temperature = fields.String()
     bean_type = fields.String()
     roast_type = fields.String()
     drink_type = fields.String()
     creamer_type = fields.String()
     sugar_type = fields.String()    
-    milk_type = fields.String()    
+    milk_type = fields.String()
+    flavor = fields.String()   
     drink_location = fields.String()    
     profile_id = fields.Integer()    
-    created_at = fields.String()
-    add_ons = fields.Nested(AddOnSchema)
+    is_favorite = fields.Boolean()
+    number_of_sugar_bags = fields.Integer()
+    isSteamed = fields.Boolean()
+    extra_comments = fields.String()
+    room_for_creamer = fields.Boolean()
+    room_for_milk = fields.Boolean()
     
     # class Meta:
     #     fields = ('drink_id', 'name', 'is_hot', 'bean_type', 'roast_type', 'drink_type',
@@ -47,32 +54,33 @@ class DrinkSchema(ma.Schema):
 
 class FriendSchema(ma.Schema):
     friend_id = fields.Integer()
-    friend_Username = fields.String()
-    profile_id = fields.Integer()
-    
+    user_a = fields.Integer()
+    user_b = fields.Integer()
 
     # class Meta:
     #     fields = ('friend_Id', 'friend_Username', 'profile_id')
         
 class GroupOrderSchema(ma.Schema):
+    date = fields.String()
+    name = fields.String()
     group_id = fields.Integer()
     is_active = fields.Boolean()
-    is_admin = fields.String()
-    members = fields.Integer()
-    order_location = fields.Integer()
+    admin = fields.String()
+    order_location = fields.String()
     order_time = fields.String()
-    created_at = fields.DateTime()
+    address = fields.String()
     
     # class Meta:
-    #     fields = ('group_id', 'is_admin', 'members', 'order_location', 'order_time', 'created_at')
+    #     fields = ('name','group_id', 'is_admin', 'is_active', 'order_location', 'order_time', 'created_at')
         
 class MembersSchema(ma.Schema):
     member_id = fields.Integer()
     group_id = fields.Integer()
-    profile_id = fields.Integer()
+    username = fields.String()
+    coffee = fields.String()
     
     # class Meta:
-    #     fields = ('member_id', 'group_id', 'profile_id')
+    #     fields = ('member_id', 'group_id', 'username')
 
 # Init Schema
 profile_schema = ProfileSchema()
@@ -81,8 +89,8 @@ profiles_schema = ProfileSchema(many=True)
 drink_schema = DrinkSchema()
 drinks_schema = DrinkSchema(many=True)
 
-addOn_schema = AddOnSchema()
-addOns_schema = AddOnSchema(many=True)
+# addOn_schema = AddOnSchema()
+# addOns_schema = AddOnSchema(many=True)
 
 friend_schema = FriendSchema()
 friends_schema = FriendSchema(many=True)
